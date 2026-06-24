@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Edit Mess</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="p-10 bg-gray-100">
+
+<h1 class="text-2xl font-bold mb-6">Edit Mess</h1>
+
+<form id="editForm" class="space-y-4">
+
+<input type="text" id="messName" placeholder="Mess Name" class="w-full p-2 border rounded">
+
+<input type="text" id="address" placeholder="Address" class="w-full p-2 border rounded">
+
+<input type="text" id="cuisine" placeholder="Cuisine" class="w-full p-2 border rounded">
+
+<input type="number" id="price" placeholder="Price" class="w-full p-2 border rounded">
+
+<textarea id="description" placeholder="Description" class="w-full p-2 border rounded"></textarea>
+
+<button class="bg-green-600 text-white px-4 py-2 rounded">
+Update Mess
+</button>
+
+</form>
+
+
+<script>
+
+// GET ID FROM URL
+function getId(){
+const params = new URLSearchParams(window.location.search)
+return params.get("id")
+}
+
+
+// LOAD EXISTING DATA
+async function loadMess(){
+
+const id = getId()
+
+const res = await fetch(`https://digital-dabbewala-backend.onrender.com/api/mess/${id}`)
+
+const mess = await res.json()
+
+document.getElementById("messName").value = mess.mess_name
+document.getElementById("address").value = mess.address
+document.getElementById("cuisine").value = mess.cuisine
+document.getElementById("price").value = mess.price
+document.getElementById("description").value = mess.description
+
+}
+
+
+// UPDATE
+document.getElementById("editForm").addEventListener("submit", async (e)=>{
+
+e.preventDefault()
+
+const id = getId()
+
+const messName = document.getElementById("messName").value
+const address = document.getElementById("address").value
+const cuisine = document.getElementById("cuisine").value
+const price = document.getElementById("price").value
+const description = document.getElementById("description").value
+
+await fetch(`https://digital-dabbewala-backend.onrender.com/api/mess/update/${id}`,{
+
+method:"PUT",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+messName,
+address,
+cuisine,
+price,
+description
+})
+
+})
+
+alert("Mess updated successfully")
+
+window.location.href="provider-dashboard-mess.html"
+
+})
+
+
+loadMess()
+
+</script>
+
+</body>
+</html>

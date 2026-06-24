@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Profile | DigitalDabbewala</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* ===== THEME COLORS ===== */
+        :root {
+            --green: #1B5E20;
+            --orange: #FF8C00;
+            --white: #ffffff;
+            --muted: #5a6b5e;
+            --border: rgba(0, 0, 0, 0.1);
+        }
+
+
+        /* ===== BODY ===== */
+        body {
+            font-family: "Plus Jakarta Sans", sans-serif;
+            background: linear-gradient(180deg, #f8f8f5, #ffffff);
+            color: var(--green);
+            min-height: 100vh;
+        }
+
+
+        /* ===== CARD ===== */
+        .card-x {
+            background: var(--white);
+            border-radius: 18px;
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, .1);
+            transition: all .3s;
+        }
+
+        .card-x:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 14px 34px rgba(27, 94, 32, .25);
+        }
+
+
+        /* ===== BUTTON ===== */
+        .btn-glow {
+            background: linear-gradient(135deg, var(--orange), var(--green));
+            color: white;
+            font-weight: 700;
+            border-radius: 12px;
+            padding: 8px 16px;
+            transition: all .3s;
+        }
+
+        .btn-glow:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 140, 0, .35);
+        }
+
+
+        /* ===== TITLE ===== */
+        .gradient-text {
+            background: linear-gradient(135deg, var(--green), var(--orange));
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+    </style>
+
+</head>
+
+
+
+<body class="flex items-center justify-center px-4">
+
+
+    <div class="card-x p-6 w-full max-w-md text-center">
+        <div class="text-6xl mb-4">👤</div>
+        <h2 class="text-3xl font-extrabold mb-4 gradient-text">
+            My Profile
+        </h2>
+
+        <div class="space-y-3 text-left">
+
+            <p><strong>Name:</strong> <span id="name"></span></p>
+            <p><strong>Email:</strong> <span id="email"></span></p>
+            <p><strong>Role:</strong> <span id="role"></span></p>
+
+        </div>
+
+
+        <div class="mt-6 flex flex-col gap-3">
+
+            <a href="provider-dashboard-mess.html" class="btn-glow text-center">
+                Back to Dashboard
+            </a>
+
+            <button onclick="logout()" class="btn-glow">
+                Logout
+            </button>
+
+        </div>
+
+    </div>
+
+
+
+    <script>
+
+        const user = JSON.parse(localStorage.getItem("user"))
+
+        if (!user) {
+            window.location.href = "login.html"
+        }
+
+        document.getElementById("name").innerText = user.name
+        document.getElementById("email").innerText = user.email
+        document.getElementById("role").innerText = user.role
+
+
+        function logout() {
+            localStorage.removeItem("user")
+            window.location.href = "login.html"
+        }
+
+    </script>
+
+</body>
+
+</html>

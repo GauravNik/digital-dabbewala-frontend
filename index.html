@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Digital Dabbewala – Mess Finder</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- AOS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ===== CSS VARIABLES ===== */
+    :root {
+      --green:  #1B5E20;
+      --orange: #FF8C00;
+      --light-orange: #FFB84D;
+      --dark:   #1a1a2e;
+      --muted:  #6b7280;
+      --border: rgba(0,0,0,0.08);
+      --bg:     #f8f9f8;
+      --white:  #ffffff;
+      --card-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    /* ===== BASE ===== */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Plus Jakarta Sans", sans-serif;
+      background: var(--bg);
+      color: #1a1a1a;
+      overflow-x: hidden;
+    }
+
+    a { text-decoration: none; }
+
+    /* ===== BACKGROUND DECORATIONS ===== */
+    .gradient-top {
+      position: fixed;
+      top: -120px; left: -120px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(255,140,0,0.18) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .bg-orb {
+      position: fixed;
+      top: 30%; right: -150px;
+      width: 420px; height: 420px;
+      background: radial-gradient(circle, rgba(27,94,32,0.13) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .bg-orb-2 {
+      position: fixed;
+      bottom: -100px; left: 10%;
+      width: 350px; height: 350px;
+      background: radial-gradient(circle, rgba(255,184,77,0.12) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ===== NAVBAR ===== */
+    .navbar {
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 0;
+      transition: box-shadow 0.3s;
+      z-index: 1000;
+    }
+
+    .navbar.scrolled {
+      box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+    }
+
+    .navbar-brand.brand { font-size: 1rem; }
+
+    .nav-link {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #374151 !important;
+      padding: 6px 12px !important;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .nav-link:hover, .nav-link.active {
+      color: var(--green) !important;
+      background: rgba(27,94,32,0.07);
+    }
+
+    /* ===== BUTTON GLOW ===== */
+    .btn-glow {
+      background: linear-gradient(135deg, var(--orange), var(--green));
+      color: #fff !important;
+      font-weight: 700;
+      font-size: 0.9rem;
+      border-radius: 12px;
+      padding: 10px 22px;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.3s;
+      display: inline-block;
+      text-decoration: none;
+    }
+
+    .btn-glow:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(255,140,0,0.38);
+      color: #fff !important;
+    }
+
+    /* ===== EYEBROW ===== */
+    .eyebrow {
+      display: inline-block;
+      background: linear-gradient(135deg, rgba(255,140,0,0.12), rgba(27,94,32,0.12));
+      border: 1px solid rgba(255,140,0,0.25);
+      border-radius: 50px;
+      padding: 6px 18px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--orange);
+      letter-spacing: 0.5px;
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      position: relative;
+      padding: 130px 0 80px;
+      background: linear-gradient(135deg, #f8fff8 0%, #fff8f0 50%, #f8f9f8 100%);
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(255,140,0,0.10) 0%, transparent 65%);
+      border-radius: 50%;
+    }
+
+    .headline {
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      font-weight: 800;
+      line-height: 1.25;
+      color: var(--dark);
+    }
+
+    .sub {
+      font-size: 1rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .stat {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 8px 16px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--green);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* ===== GRADIENT TEXT ===== */
+    .gradient-text {
+      background: linear-gradient(135deg, var(--green), var(--orange));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ===== CARD-X ===== */
+    .card-x {
+      background: var(--white);
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      box-shadow: var(--card-shadow);
+      padding: 28px;
+      transition: all 0.3s;
+    }
+
+    .card-x:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 18px 40px rgba(27,94,32,0.14);
+    }
+
+    /* ===== SECTION ===== */
+    .section {
+      padding: 80px 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ===== WHY US ===== */
+    .why-us {
+      background: linear-gradient(180deg, #f8f9f8 0%, #fff 100%);
+    }
+
+    .emoji-bg {
+      position: absolute;
+      font-size: 6rem;
+      opacity: 0.04;
+      pointer-events: none;
+      user-select: none;
+      top: 10%; right: 3%;
+    }
+
+    .emoji-bg.bottom-left { top: auto; bottom: 5%; right: auto; left: 2%; }
+    .emoji-bg.center      { top: 40%; left: 45%; font-size: 8rem; }
+
+    .feature-card {
+      background: var(--white);
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      box-shadow: var(--card-shadow);
+      padding: 28px 24px;
+      height: 100%;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 44px rgba(0,0,0,0.11);
+    }
+
+    .feature-icon {
+      width: 56px; height: 56px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      margin-bottom: 16px;
+    }
+
+    .feature-card h4 {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 8px;
+    }
+
+    .feature-card p {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.65;
+      margin: 0;
+    }
+
+    .decor-line {
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 100%; height: 3px;
+      border-radius: 0 0 18px 18px;
+    }
+
+    /* ===== OUR STORY ===== */
+    .story-quality {
+      background: linear-gradient(135deg, #fff 0%, #f8f9f8 100%);
+    }
+
+    /* ===== FLOATING CIRCLE ===== */
+    .floating-circle {
+      position: relative;
+      width: 380px; height: 380px;
+      margin: 0 auto;
+    }
+
+    .floating-circle .circle-glow {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(255,140,0,0.2) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .floating-circle .orbit {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px dashed rgba(255,140,0,0.2);
+      animation: spinOrbit 14s linear infinite;
+    }
+
+    @keyframes spinOrbit {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    .circle-img {
+      position: absolute;
+      width: 68px; height: 68px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid var(--white);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+      top: 50%; left: 50%;
+      transform-origin: 0 0;
+    }
+
+    .circle-img img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* Position each img on orbit */
+    .circle-img:nth-child(1) { transform: rotate(0deg)   translateX(160px) rotate(0deg)   translate(-50%,-50%); }
+    .circle-img:nth-child(2) { transform: rotate(60deg)  translateX(160px) rotate(-60deg) translate(-50%,-50%); }
+    .circle-img:nth-child(3) { transform: rotate(120deg) translateX(160px) rotate(-120deg) translate(-50%,-50%); }
+    .circle-img:nth-child(4) { transform: rotate(180deg) translateX(160px) rotate(-180deg) translate(-50%,-50%); }
+    .circle-img:nth-child(5) { transform: rotate(240deg) translateX(160px) rotate(-240deg) translate(-50%,-50%); }
+    .circle-img:nth-child(6) { transform: rotate(300deg) translateX(160px) rotate(-300deg) translate(-50%,-50%); }
+
+    /* ===== STEPS ===== */
+    .step-card {
+      text-align: center;
+      position: relative;
+    }
+
+    .step-num {
+      width: 52px; height: 52px;
+      background: linear-gradient(135deg, var(--orange), var(--green));
+      color: #fff;
+      font-size: 1.3rem;
+      font-weight: 800;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      box-shadow: 0 6px 18px rgba(255,140,0,0.3);
+    }
+
+    .step-card h5 {
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 8px;
+    }
+
+    /* ===== TIFFIN PROVIDER CTA ===== */
+    .tiffin-section {
+      padding: 60px 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #f0fdf4 0%, #fff8f0 100%);
+      z-index: 1;
+      position: relative;
+    }
+
+    .tiffin-card {
+      background: linear-gradient(135deg, var(--green), #2e7d32, var(--orange));
+      border-radius: 24px;
+      padding: 50px 40px;
+      text-align: center;
+      max-width: 700px;
+      width: 100%;
+      color: #fff;
+      box-shadow: 0 20px 50px rgba(27,94,32,0.25);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tiffin-card::before {
+      content: "";
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 220px; height: 220px;
+      background: rgba(255,255,255,0.07);
+      border-radius: 50%;
+    }
+
+    .tiffin-card::after {
+      content: "";
+      position: absolute;
+      bottom: -50px; left: -50px;
+      width: 180px; height: 180px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 50%;
+    }
+
+    .chef-emoji {
+      font-size: 3.5rem;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .tiffin-card h2 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .tiffin-card p {
+      font-size: 1rem;
+      opacity: 0.9;
+      margin-bottom: 24px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .btn-tiffin {
+      display: inline-block;
+      background: #fff;
+      color: var(--green);
+      font-weight: 800;
+      font-size: 0.95rem;
+      border-radius: 14px;
+      padding: 13px 30px;
+      text-decoration: none;
+      transition: all 0.3s;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn-tiffin:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.22);
+      color: var(--orange);
+    }
+
+    /* ===== FAQ ===== */
+    .faq-item {
+      background: var(--white);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      margin-bottom: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+      transition: box-shadow 0.3s;
+    }
+
+    .faq-item:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.09); }
+
+    .faq-header {
+      padding: 18px 22px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--dark);
+      user-select: none;
+      transition: background 0.2s;
+    }
+
+    .faq-header:hover { background: rgba(27,94,32,0.03); }
+
+    .faq-header span {
+      font-size: 1.4rem;
+      font-weight: 400;
+      color: var(--orange);
+      line-height: 1;
+    }
+
+    .faq-body {
+      display: none;
+      padding: 0 22px 18px;
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.7;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ===== FOOTER ===== */
+    footer.section {
+      background: linear-gradient(180deg, #f8f9f8 0%, #fff 100%);
+      border-top: 1px solid var(--border);
+    }
+
+    footer h6 {
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 14px;
+      font-size: 0.9rem;
+    }
+
+    footer ul li {
+      margin-bottom: 8px;
+    }
+
+    footer ul li a {
+      color: var(--muted);
+      font-size: 0.88rem;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    footer ul li a:hover { color: var(--orange); }
+
+    /* ===== SCROLL TO TOP ===== */
+    #scrollTopBtn {
+      display: none;
+      position: fixed;
+      bottom: 28px; right: 28px;
+      width: 46px; height: 46px;
+      background: linear-gradient(135deg, var(--orange), var(--green));
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 800;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 9999;
+      box-shadow: 0 6px 20px rgba(255,140,0,0.35);
+      place-items: center;
+      transition: all 0.3s;
+    }
+
+    #scrollTopBtn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 28px rgba(255,140,0,0.45);
+    }
+
+    /* ===== LOGO PULSE ANIMATION ===== */
+    @keyframes pulseLogo {
+      0%, 100% { box-shadow: 0 8px 20px rgba(255,140,0,0.35); }
+      50%       { box-shadow: 0 8px 30px rgba(255,140,0,0.6); }
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .hero { padding: 110px 0 60px; }
+      .floating-circle { width: 280px; height: 280px; }
+      .circle-img:nth-child(1) { transform: rotate(0deg)   translateX(110px) rotate(0deg)   translate(-50%,-50%); }
+      .circle-img:nth-child(2) { transform: rotate(60deg)  translateX(110px) rotate(-60deg)  translate(-50%,-50%); }
+      .circle-img:nth-child(3) { transform: rotate(120deg) translateX(110px) rotate(-120deg) translate(-50%,-50%); }
+      .circle-img:nth-child(4) { transform: rotate(180deg) translateX(110px) rotate(-180deg) translate(-50%,-50%); }
+      .circle-img:nth-child(5) { transform: rotate(240deg) translateX(110px) rotate(-240deg) translate(-50%,-50%); }
+      .circle-img:nth-child(6) { transform: rotate(300deg) translateX(110px) rotate(-300deg) translate(-50%,-50%); }
+      .tiffin-card { padding: 36px 24px; }
+      .tiffin-card h2 { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ===== BACKGROUND DECORATIONS ===== -->
+  <div class="gradient-top"></div>
+  <div class="bg-orb"></div>
+  <div class="bg-orb-2"></div>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container">
+
+      <!-- Logo + Brand -->
+      <a class="navbar-brand brand d-flex align-items-center gap-2" href="./index.html">
+        <div class="logo-box"
+          style="display:inline-flex;align-items:center;justify-content:center;
+                 padding:8px;border-radius:14px;
+                 background:linear-gradient(135deg,#FF6B35,#FFB84D);
+                 box-shadow:0 8px 20px rgba(255,140,0,0.35);
+                 animation:pulseLogo 4s ease-in-out infinite;">
+          <svg width="34" height="34" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="6" y="6" width="20" height="5" rx="1.5" fill="white" stroke="white" stroke-width="0.5"/>
+            <circle cx="16" cy="8.5" r="1" fill="#FFB84D"/>
+            <rect x="6" y="12" width="20" height="6" rx="1.5" fill="white" stroke="white" stroke-width="0.5"/>
+            <path d="M10 14.5 H22 M10 16.5 H22" stroke="#FFB84D" stroke-width="0.8" stroke-linecap="round"/>
+            <rect x="6" y="19" width="20" height="7" rx="1.5" fill="white" stroke="white" stroke-width="0.5"/>
+            <circle cx="13" cy="22.5" r="1.2" fill="#FFB84D"/>
+            <circle cx="19" cy="22.5" r="1.2" fill="#FFB84D"/>
+            <path d="M12 5 Q16 2 20 5" stroke="white" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          </svg>
+        </div>
+        <div>
+          <span class="fw-bold" style="font-size:1.3rem;color:var(--green);">Digital</span>
+          <span style="font-size:1.3rem;color:var(--orange);font-weight:800;">Dabbewala</span>
+        </div>
+      </a>
+
+      <!-- Toggler -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Menu -->
+      <div id="nav" class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="#why-us">Features</a></li>
+          <li class="nav-item"><a class="nav-link" href="#how">How It Works</a></li>
+          <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
+          <li class="nav-item"><a class="nav-link" href="mess-list.html">Mess Finder</a></li>
+        </ul>
+        <a href="login.html" class="btn btn-glow ms-lg-3">Login</a>
+      </div>
+
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section id="home" class="hero">
+    <div class="container">
+      <div class="row align-items-center g-4">
+
+        <div class="col-lg-6" data-aos="fade-up">
+          <span class="eyebrow">
+            <h3>Fresh • Flexible • Fast</h3>
+          </span>
+          <h1 class="headline mt-3">Home‑style lunches, now with a splash of color ✨</h1>
+          <p class="sub mt-3">
+            Pick a plan, choose mess services, and eat better without the hassle. Pause, skip, or cancel anytime.
+          </p>
+          <div class="d-flex gap-3 mt-4 flex-wrap">
+            <a href="./mess-list.html" class="btn btn-glow">Explore Now</a>
+            <a href="#how" class="btn btn-outline-light"
+              style="border:2px solid var(--border);color:#1a1a1a;font-weight:700;border-radius:12px;padding:10px 22px;">
+              See how it works
+            </a>
+          </div>
+          <div class="d-flex gap-3 mt-4 flex-wrap">
+            <div class="stat"><span>🚚</span> Daily Meals</div>
+            <div class="stat"><span>🥗</span> Balanced menus</div>
+            <div class="stat"><span>🔁</span> Pause anytime</div>
+          </div>
+        </div>
+
+        <div class="col-lg-6 text-center" data-aos="fade-left">
+          <img src="./images/logo-removebg-preview.png" width="100%" height="400px" alt="Lunch box"
+            style="filter:drop-shadow(0 20px 40px rgba(0,0,0,.35));max-height:400px;object-fit:contain;" />
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== WHY CHOOSE US ===== -->
+  <section id="why-us" class="section why-us position-relative overflow-hidden">
+    <div class="container" data-aos="fade-up">
+
+      <!-- Background Decorative Emojis -->
+      <div class="emoji-bg">🍛</div>
+      <div class="emoji-bg bottom-left">🥘</div>
+      <div class="emoji-bg center">🍲</div>
+
+      <!-- Heading -->
+      <div class="text-center mb-5">
+        <div class="eyebrow"></div>
+        <h2 class="headline mt-3">
+          <span style="color:var(--dark)">What Makes Us</span><br>
+          <span class="gradient-text">Your Best Choice</span>
+        </h2>
+        <p class="sub mt-3 mx-auto" style="max-width:700px;">
+          Connecting you with trusted tiffin services near you.
+        </p>
+      </div>
+
+      <!-- Feature Grid -->
+      <div class="row g-4 justify-content-center">
+
+        <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="0">
+          <div class="feature-card">
+            <div class="feature-icon" style="background-color:rgba(255,107,53,0.15);">❤️</div>
+            <h4>Home-Style Cooking</h4>
+            <p>Authentic homemade food prepared with love and care, just like your mom makes it.</p>
+            <div class="decor-line" style="background-color:#FF6B35"></div>
+          </div>
+        </div>
+
+        <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="100">
+          <div class="feature-card">
+            <div class="feature-icon" style="background-color:rgba(255,184,77,0.15);">⏰</div>
+            <h4>Daily Meals</h4>
+            <p>Daily homemade delights, straight from the heart to your plate.</p>
+            <div class="decor-line" style="background-color:#FFB84D"></div>
+          </div>
+        </div>
+
+        <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="200">
+          <div class="feature-card">
+            <div class="feature-icon" style="background-color:rgba(76,175,80,0.15);">🛡️</div>
+            <h4>Hygiene Certified</h4>
+            <p>All our partner kitchens are verified and follow strict hygiene standards.</p>
+            <div class="decor-line" style="background-color:#4CAF50"></div>
+          </div>
+        </div>
+
+        <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="300">
+          <div class="feature-card">
+            <div class="feature-icon" style="background-color:rgba(139,195,74,0.15);">🌿</div>
+            <h4>Fresh Ingredients</h4>
+            <p>Only the freshest, locally sourced ingredients make it to your plate.</p>
+            <div class="decor-line" style="background-color:#8BC34A"></div>
+          </div>
+        </div>
+
+        <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="400">
+          <div class="feature-card">
+            <div class="feature-icon" style="background-color:rgba(255,107,53,0.15);">💰</div>
+            <h4>Budget Friendly</h4>
+            <p>Affordable meal plans that won't break your bank. Quality food at great prices.</p>
+            <div class="decor-line" style="background-color:#FF6B35"></div>
+          </div>
+        </div>
+
+        <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="500">
+          <div class="feature-card">
+            <div class="feature-icon" style="background-color:rgba(255,184,77,0.15);">👥</div>
+            <h4>Trusted by Thousands</h4>
+            <p>Join our community of satisfied customers who enjoy delicious meals daily.</p>
+            <div class="decor-line" style="background-color:#FFB84D"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== OUR STORY ===== -->
+  <section id="our-story" class="section story-quality">
+    <div class="container">
+      <div class="row align-items-center gx-5 gy-5">
+
+        <div class="col-lg-6 text-block" data-aos="fade-right">
+          <span class="eyebrow">
+            <h1><strong>Our Story</strong></h1>
+          </span>
+          <h2 class="headline mt-3">From Home Kitchens to Your Lunch Box</h2>
+          <p class="sub mt-3">
+            What started as a humble kitchen idea has grown into a movement to bring home-style, healthy, and hygienic
+            meals to busy professionals. Every lunchbox carries the warmth, care, and balance of a true home-cooked meal.
+          </p>
+          <a href="./mess-list.html" class="btn btn-glow mt-4">Start Your Journey</a>
+        </div>
+
+        <div class="col-lg-6" data-aos="fade-left">
+          <div class="floating-circle no-center">
+            <div class="circle-glow"></div>
+            <div class="orbit">
+              <div class="circle-img"><img src="./images/meal2.webp" alt="Food 1"></div>
+              <div class="circle-img"><img src="./images/meal3.webp" alt="Food 2"></div>
+              <div class="circle-img"><img src="./images/meal4.webp" alt="Food 3"></div>
+              <div class="circle-img"><img src="./images/meal5.webp" alt="Food 4"></div>
+              <div class="circle-img"><img src="./images/meal2.webp" alt="Food 5"></div>
+              <div class="circle-img"><img src="./images/meal6.webp" alt="Food 6"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section id="how" class="section">
+    <div class="container">
+      <div class="text-center mb-4" data-aos="zoom-in">
+        <h2 class="fw-bold">How it works</h2>
+        <p style="color:var(--muted)">Four colorful steps to great lunches</p>
+      </div>
+      <div class="row g-4">
+
+        <div class="col-md-3" data-aos="fade-right">
+          <div class="card-x step-card h-100">
+            <div class="step-num">1</div>
+            <h5>Search based on area</h5>
+            <p style="color:var(--muted)">Near your area or locality.</p>
+          </div>
+        </div>
+
+        <div class="col-md-3" data-aos="fade-up">
+          <div class="card-x step-card h-100">
+            <div class="step-num">2</div>
+            <h5>Select Mess Service</h5>
+            <p style="color:var(--muted)">Browse verified mess services.</p>
+          </div>
+        </div>
+
+        <div class="col-md-3" data-aos="fade-up">
+          <div class="card-x step-card h-100">
+            <div class="step-num">3</div>
+            <h5>Select Plan</h5>
+            <p style="color:var(--muted)">Daily, Weekly or Monthly.</p>
+          </div>
+        </div>
+
+        <div class="col-md-3" data-aos="fade-left">
+          <div class="card-x step-card h-100">
+            <div class="step-num">4</div>
+            <h5>Enjoy your time</h5>
+            <p style="color:var(--muted)">Enjoy daily homecooked meals.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TIFFIN PROVIDER CTA ===== -->
+  <section id="tiffin-provider" class="tiffin-section" data-aos="zoom-in-up">
+    <div class="tiffin-card">
+      <div class="chef-emoji">👨‍🍳</div>
+      <h2>Are You a Tiffin Service Provider?</h2>
+      <p>Join our platform and reach thousands of hungry customers looking for delicious homemade meals!</p>
+      <a href="./provider-dashboard.html" class="btn-tiffin">List Your Tiffin Service</a>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section id="faq" class="section" style="padding-bottom:90px">
+    <div class="container">
+      <div class="text-center mb-4" data-aos="zoom-in">
+        <h2 class="fw-bold">Frequently asked questions</h2>
+      </div>
+      <div class="row g-3">
+        <div class="col-lg-8 mx-auto">
+
+          <div class="faq-item">
+            <div class="faq-header">Can I pause or skip a week? <span>+</span></div>
+            <div class="faq-body">Yes. You can pause, skip specific days, or cancel anytime from your account.</div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-header">Do you offer one‑time meals? <span>+</span></div>
+            <div class="faq-body">Absolutely. Choose the one‑time plan for a single order without subscription.</div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-header">What areas are you available in? <span>+</span></div>
+            <div class="faq-body">Coverage varies by city and neighborhood. Enter your address at checkout to confirm.</div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-header">Which payments are supported? <span>+</span></div>
+            <div class="faq-body">UPI, credit/debit cards, and net banking via secure gateways as per service providers.</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="section">
+    <div class="container">
+      <div class="row g-4">
+
+        <div class="col-md-5">
+          <div class="brand mb-2 d-flex align-items-center gap-2">
+            <div class="logo-box"
+              style="display:inline-flex;align-items:center;justify-content:center;
+                     padding:8px;border-radius:14px;
+                     background:linear-gradient(135deg,#FF6B35,#FFB84D);
+                     box-shadow:0 8px 20px rgba(255,140,0,0.35);
+                     animation:pulseLogo 4s ease-in-out infinite;">
+              <svg width="34" height="34" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="6" y="6" width="20" height="5" rx="1.5" fill="white" stroke="white" stroke-width="0.5"/>
+                <circle cx="16" cy="8.5" r="1" fill="#FFB84D"/>
+                <rect x="6" y="12" width="20" height="6" rx="1.5" fill="white" stroke="white" stroke-width="0.5"/>
+                <path d="M10 14.5 H22 M10 16.5 H22" stroke="#FFB84D" stroke-width="0.8" stroke-linecap="round"/>
+                <rect x="6" y="19" width="20" height="7" rx="1.5" fill="white" stroke="white" stroke-width="0.5"/>
+                <circle cx="13" cy="22.5" r="1.2" fill="#FFB84D"/>
+                <circle cx="19" cy="22.5" r="1.2" fill="#FFB84D"/>
+                <path d="M12 5 Q16 2 20 5" stroke="white" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+              </svg>
+            </div>
+            <div>
+              <strong style="font-size:1.3rem;color:var(--green);">Digital</strong>
+              <strong style="font-size:1.3rem;color:var(--orange);">Dabbewala</strong>
+            </div>
+          </div>
+          <p style="color:var(--muted)">Fresh, home-style meals delivered on a flexible schedule. Made with care, served hot.</p>
+        </div>
+
+        <div class="col-md-2">
+          <h6>Company</h6>
+          <ul class="list-unstyled">
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+
+        <div class="col-md-2">
+          <h6>Help</h6>
+          <ul class="list-unstyled">
+            <li><a href="#faq">FAQ</a></li>
+            <li><a href="#">Support</a></li>
+            <li><a href="#">Available areas</a></li>
+          </ul>
+        </div>
+
+        <div class="col-md-2">
+          <h6>Legal</h6>
+          <ul class="list-unstyled">
+            <li><a href="#">Terms</a></li>
+            <li><a href="#">Privacy</a></li>
+          </ul>
+        </div>
+
+      </div>
+      <hr style="border-color:var(--border);margin-top:30px;">
+      <p class="text-center" style="color:var(--muted);font-size:0.88rem;">© 2025 DigitalDabbewala — All rights reserved</p>
+    </div>
+  </footer>
+
+  <!-- ===== SCROLL TO TOP ===== -->
+  <button id="scrollTopBtn">↑</button>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+
+  <script>
+    // ===== INIT LIBRARIES =====
+    AOS.init({ duration: 900, once: true });
+    gsap.registerPlugin(ScrollTrigger);
+
+    // ===== STICKY NAVBAR =====
+    const navbar = document.querySelector('.navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    // ===== ACTIVE LINK HIGHLIGHT =====
+    const links = document.querySelectorAll('.nav-link');
+    const sections = [...document.querySelectorAll('section')];
+    window.addEventListener('scroll', () => {
+      const top = window.scrollY + 120;
+      let id = 'home';
+      sections.forEach(s => {
+        if (top >= s.offsetTop && top < s.offsetTop + s.offsetHeight) id = s.id;
+      });
+      links.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === `#${id}`);
+      });
+    });
+
+    // ===== SCROLL TO TOP BUTTON =====
+    const topBtn = document.getElementById('scrollTopBtn');
+    window.addEventListener('scroll', () => {
+      topBtn.style.display = window.scrollY > 300 ? 'grid' : 'none';
+    });
+    topBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // ===== FAQ ACCORDION =====
+    document.querySelectorAll('.faq-header').forEach(h => {
+      h.addEventListener('click', () => {
+        const open = h.nextElementSibling.style.display === 'block';
+        document.querySelectorAll('.faq-body').forEach(b => b.style.display = 'none');
+        document.querySelectorAll('.faq-header span').forEach(s => s.textContent = '+');
+        if (!open) {
+          h.nextElementSibling.style.display = 'block';
+          h.querySelector('span').textContent = '−';
+        }
+      });
+    });
+
+    // ===== GSAP ENTRANCE ANIMATIONS =====
+    gsap.utils.toArray('.card-x').forEach((card, i) => {
+      gsap.from(card, {
+        opacity: 0, y: 30, duration: 0.6, delay: i * 0.06,
+        scrollTrigger: { trigger: card, start: 'top 85%' }
+      });
+    });
+
+    gsap.utils.toArray('.step-card').forEach((el, i) => {
+      gsap.from(el, {
+        scale: 0.95, opacity: 0, duration: 0.5, delay: i * 0.05,
+        scrollTrigger: { trigger: el, start: 'top 85%' }
+      });
+    });
+
+    // ===== SMOOTH SCROLL FOR ANCHOR LINKS =====
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const href = this.getAttribute('href');
+        if (href === '#') return;
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) {
+          window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' });
+        }
+      });
+    });
+
+    // ===== PARALLAX + FADE FOR OUR STORY SECTION =====
+    window.addEventListener('scroll', () => {
+      const hero = document.querySelector('.hero');
+      const nextSection = document.querySelector('#our-story');
+      const scrollTop = window.scrollY;
+      const windowHeight = window.innerHeight;
+
+      if (hero) {
+        hero.style.backgroundPositionY = `${scrollTop * 0.4}px`;
+      }
+
+      if (nextSection) {
+        const rect = nextSection.getBoundingClientRect();
+        const visible = rect.top < windowHeight * 0.9;
+        nextSection.style.opacity = visible ? '1' : '0';
+        nextSection.style.transform = visible ? 'translateY(0)' : 'translateY(50px)';
+        nextSection.style.transition = 'opacity 1s ease, transform 1s ease';
+      }
+    });
+  </script>
+
+</body>
+</html>

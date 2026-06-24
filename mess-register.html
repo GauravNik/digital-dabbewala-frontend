@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register Your Mess | DigitalDabbewala</title>
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+  <link rel="stylesheet" href="./images/css/mess-register.css">
+
+</head>
+
+<body class="font-display bg-light-bg text-slate-900 overflow-x-hidden">
+
+  <!-- Navbar -->
+  <nav
+    class="navbar fixed top-0 left-0 w-full flex items-center justify-between px-6 py-3 z-50 bg-white/90 backdrop-blur-md shadow-md animate-fadeDown">
+
+    <a href="index.html" class="flex items-center gap-2 text-lg font-bold">
+
+      <div class="logo-box p-2 rounded-xl bg-gradient-to-br from-[#FF6B35] to-[#FFB84D] animate-glow">
+
+        <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+          <rect x="6" y="6" width="20" height="5" rx="1.5" fill="white" />
+          <rect x="6" y="12" width="20" height="6" rx="1.5" fill="white" />
+          <rect x="6" y="19" width="20" height="7" rx="1.5" fill="white" />
+          <circle cx="13" cy="22.5" r="1.2" fill="#FFB84D" />
+          <circle cx="19" cy="22.5" r="1.2" fill="#FFB84D" />
+          <path d="M12 5 Q16 2 20 5" stroke="white" stroke-width="1.5" stroke-linecap="round" fill="none" />
+        </svg>
+
+      </div>
+
+      <span class="text-[#1B5E20]">Digital</span>
+      <span class="text-[#FF8C00]">Dabbewala</span>
+
+    </a>
+
+  </nav>
+
+
+
+  <!-- MAIN FORM -->
+  <main class="pt-24 pb-24 px-6 max-w-2xl mx-auto fade-in">
+
+    <h1 class="text-4xl font-extrabold mb-4 gradient-text">Register Your Mess</h1>
+
+    <p class="text-gray-600 mb-10">
+      Fill in the details below to add your tiffin service to our listings.
+    </p>
+
+
+    <!-- UPDATED FORM -->
+    <form id="messForm" enctype="multipart/form-data" class="space-y-8">
+
+      <div class="form-group fade-up">
+        <label class="form-label">Mess Name</label>
+
+        <input type="text" id="messName" class="form-control" placeholder="e.g., Mom’s Kitchen" required>
+
+      </div>
+
+
+      <div class="form-group fade-up delay-1">
+
+        <label class="form-label">Address</label>
+
+        <input type="text" id="messAddress" class="form-control" placeholder="Enter location" required>
+
+      </div>
+
+
+      <div class="fade-up delay-2">
+
+        <label class="form-label">Cuisine Type</label>
+
+        <div class="grid grid-cols-3 gap-3">
+
+          <button type="button" class="btn-option active">Veg</button>
+          <button type="button" class="btn-option">Non-Veg</button>
+          <button type="button" class="btn-option">Mixed</button>
+
+        </div>
+
+      </div>
+
+
+      <div class="form-group fade-up delay-3">
+
+        <label class="form-label">Monthly Price (₹)</label>
+
+        <input type="number" id="messPrice" class="form-control" placeholder="2500" required>
+
+      </div>
+
+
+      <div class="fade-up delay-4">
+
+        <label class="form-label">Meal Timings</label>
+
+        <div class="space-y-3">
+
+          <div class="flex items-center gap-3">
+
+            <p class="w-20 font-semibold text-gray-600">Lunch</p>
+
+            <input type="time" id="lunchStart" class="form-control w-1/2">
+            <input type="time" id="lunchEnd" class="form-control w-1/2">
+
+          </div>
+
+          <div class="flex items-center gap-3">
+
+            <p class="w-20 font-semibold text-gray-600">Dinner</p>
+
+            <input type="time" id="dinnerStart" class="form-control w-1/2">
+            <input type="time" id="dinnerEnd" class="form-control w-1/2">
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="fade-up delay-5">
+
+        <label class="form-label">Upload Mess Image</label>
+
+        <input type="file" id="messImage" class="form-control" accept="image/*">
+
+      </div>
+
+
+      <div class="form-group fade-up delay-6">
+
+        <label class="form-label">Description</label>
+
+        <textarea id="description" class="form-control h-32" placeholder="Specialties, delivery info, etc."></textarea>
+
+      </div>
+
+
+      <div class="text-center fade-up delay-7">
+
+        <button type="submit" class="btn-glow">
+          Add My Mess
+        </button>
+
+      </div>
+
+    </form>
+
+  </main>
+
+
+
+  <!-- SUCCESS MODAL -->
+
+  <div id="successModal" class="modal hidden">
+
+    <div class="modal-content animate-pop">
+
+      <div class="checkmark">
+
+        <span class="material-symbols-outlined text-5xl">
+          check_circle
+        </span>
+
+      </div>
+
+      <h3 class="mt-4 text-2xl font-bold">
+        Mess Added Successfully!
+      </h3>
+
+      <p class="text-gray-600 mt-2">
+        Redirecting to Provider Dashboard...
+      </p>
+
+    </div>
+
+  </div>
+  <script>
+    const user = JSON.parse(localStorage.getItem("user"))
+
+    if (!user) {
+      alert("Please login first")
+      window.location.href = "login.html"
+    }
+
+    document.querySelectorAll('.btn-option').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.btn-option').forEach(b => b.classList.remove('active'))
+        btn.classList.add('active')
+      })
+    })
+
+    const form = document.getElementById("messForm")
+    const modal = document.getElementById("successModal")
+
+    form.addEventListener("submit", async (e) => {
+
+      e.preventDefault()
+
+      const messName = document.getElementById("messName").value
+      const address = document.getElementById("messAddress").value
+      const cuisine = document.querySelector(".btn-option.active").innerText
+      const price = document.getElementById("messPrice").value
+      const description = document.getElementById("description").value
+      const imageFile = document.getElementById("messImage").files[0]
+
+      const formData = new FormData()
+
+      formData.append("messName", messName)
+      formData.append("address", address)
+      formData.append("cuisine", cuisine)
+      formData.append("price", price)
+      formData.append("description", description)
+
+      const user = JSON.parse(localStorage.getItem("user"))
+
+      formData.append("provider_id", user.id)
+
+      if (imageFile) {
+        formData.append("image", imageFile)
+      }
+
+      try {
+
+        const res = await fetch("https://digital-dabbewala-backend.onrender.com/api/mess/add", {
+          method: "POST",
+          body: formData
+        })
+
+        const data = await res.json()
+
+        console.log(data)
+
+        modal.classList.remove("hidden")
+
+        setTimeout(() => {
+          window.location.href = "provider-dashboard-mess.html"
+        }, 1800)
+
+      } catch (err) {
+
+        console.log(err)
+        alert("Error adding mess")
+
+      }
+
+    })
+
+  </script>
+
+</body>
+
+</html>

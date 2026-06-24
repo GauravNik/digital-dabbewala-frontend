@@ -1,0 +1,112 @@
+:root {
+  --primary: #FF8C00;
+  --green: #1B5E20;
+  --muted: #5a6b5e;
+  --bg-light: #f8f9f8;
+  --white: #ffffff;
+}
+
+/* ====== Layout ====== */
+body {
+  background: var(--bg-light);
+  color: var(--green);
+  overflow-x: hidden;
+  font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+/* ====== Navbar Logo Animation ====== */
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(255, 140, 0, 0.3); }
+  50% { box-shadow: 0 0 35px rgba(27, 94, 32, 0.4); }
+}
+.animate-glow {
+  animation: glowPulse 4s infinite ease-in-out;
+}
+
+/* ====== Card ====== */
+.card {
+  background: var(--white);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+}
+.card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 12px 35px rgba(27,94,32,0.25);
+}
+.label {
+  color: var(--muted);
+  font-weight: 600;
+  margin-bottom: .25rem;
+}
+.value {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--green);
+}
+
+/* ====== Button ====== */
+.btn-glow {
+  background: linear-gradient(135deg, var(--primary), var(--green));
+  color: #fff;
+  font-weight: 700;
+  padding: 0.9rem 2rem;
+  border: none;
+  border-radius: 50px;
+  box-shadow: 0 10px 28px rgba(255, 140, 0, 0.35);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.btn-glow:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 35px rgba(27, 94, 32, 0.4);
+}
+
+/* ====== Bottom Nav ====== */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: space-around;
+  padding: .6rem 0;
+  box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+}
+.bottom-nav a {
+  text-align: center;
+  font-size: .85rem;
+  color: var(--muted);
+  transition: all 0.3s;
+}
+.bottom-nav a.active,
+.bottom-nav a:hover {
+  color: var(--primary);
+  transform: translateY(-2px);
+}
+
+/* ====== Animation Helpers ====== */
+.fade-up {
+  transform: translateY(30px);
+  opacity: 0;
+  animation: fadeUp 1s forwards ease-out;
+}
+@keyframes fadeUp {
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 1s forwards ease-out;
+}
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+.fade-up.delay-2 { animation-delay: 0.4s; }
+.fade-up.delay-3 { animation-delay: 0.8s; }

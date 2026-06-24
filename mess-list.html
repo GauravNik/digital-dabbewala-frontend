@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dabbewala – Mess Finder</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+
+  <style>
+    :root {
+      --green: #1B5E20;
+      --orange: #FF8C00;
+      --light-orange: #FFB84D;
+      --bg: #f8f9f8;
+      --white: #ffffff;
+      --muted: #6b7280;
+      --shadow: 0 8px 24px rgba(0,0,0,0.09);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Plus Jakarta Sans", sans-serif;
+      background: var(--bg);
+      color: #1a1a1a;
+      min-height: 100vh;
+    }
+
+    /* ===== NAVBAR ===== */
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      background: rgba(255,255,255,0.93);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+      z-index: 100;
+      animation: fadeDown 0.6s ease both;
+    }
+
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo-box {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #FF6B35, #FFB84D);
+      box-shadow: 0 6px 18px rgba(255,140,0,0.3);
+    }
+
+    .btn-glow {
+      background: linear-gradient(135deg, var(--orange), var(--green));
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.85rem;
+      border-radius: 10px;
+      padding: 8px 18px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-glow:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(255,140,0,0.38);
+    }
+
+    /* ===== HERO SEARCH BAR ===== */
+    .search-hero {
+      background: linear-gradient(135deg, #1B5E20 0%, #2e7d32 50%, #FF8C00 100%);
+      padding: 80px 24px 40px;
+      margin-top: 56px;
+      text-align: center;
+    }
+
+    .search-hero h2 {
+      color: #fff;
+      font-size: 1.9rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .search-hero p {
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 22px;
+      font-size: 0.95rem;
+    }
+
+    .search-bar-wrap {
+      display: flex;
+      max-width: 600px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 50px;
+      overflow: hidden;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.18);
+    }
+
+    .search-bar-wrap input {
+      flex: 1;
+      padding: 14px 20px;
+      border: none;
+      outline: none;
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: #333;
+      background: transparent;
+    }
+
+    .search-bar-wrap button {
+      background: linear-gradient(135deg, var(--orange), var(--green));
+      color: #fff;
+      border: none;
+      padding: 0 24px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.9rem;
+      transition: opacity 0.2s;
+    }
+
+    .search-bar-wrap button:hover { opacity: 0.9; }
+
+    /* ===== LOCATION BAR ===== */
+    #locationBar {
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 10px 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    #locationText {
+      font-size: 0.85rem;
+      color: var(--muted);
+      flex: 1;
+    }
+
+    .loc-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, var(--green), #2e7d32);
+      color: #fff;
+      border: none;
+      padding: 7px 16px;
+      border-radius: 50px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.3s;
+    }
+
+    .loc-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(27,94,32,0.3);
+    }
+
+    /* ===== FILTERS ===== */
+    .filter-bar {
+      padding: 14px 24px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      background: #fff;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .filter-bar span {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-right: 4px;
+    }
+
+    .filter-btn {
+      padding: 7px 18px;
+      border-radius: 50px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      border: 2px solid transparent;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.25s;
+      background: #f3f4f6;
+      color: #444;
+    }
+
+    .filter-btn.active,
+    .filter-btn:hover {
+      background: linear-gradient(135deg, var(--orange), var(--green));
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 4px 14px rgba(255,140,0,0.28);
+    }
+
+    /* cuisine pills */
+    .cuisine-pill {
+      padding: 5px 14px;
+      border-radius: 50px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+      background: #f3f4f6;
+      color: #555;
+      border: 1.5px solid #e5e7eb;
+    }
+
+    .cuisine-pill.active,
+    .cuisine-pill:hover {
+      background: var(--green);
+      color: #fff;
+      border-color: var(--green);
+    }
+
+    /* ===== RESULTS BAR ===== */
+    .results-bar {
+      padding: 10px 24px;
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    /* ===== MESS GRID ===== */
+    .mess-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 22px;
+      padding: 16px 24px 80px;
+    }
+
+    /* ===== MESS CARD ===== */
+    .mess-card {
+      background: var(--white);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.07);
+      transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+      cursor: pointer;
+      animation: fadeUp 0.5s ease both;
+      border: 1px solid rgba(0,0,0,0.04);
+    }
+
+    .mess-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.13);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .mess-img {
+      width: 100%;
+      height: 160px;
+      background-size: cover;
+      background-position: center;
+      background-color: #e5e7eb;
+      position: relative;
+    }
+
+    .mess-img-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: var(--white);
+      border-radius: 50px;
+      padding: 3px 10px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--green);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+
+    .mess-img-badge.nonveg { color: #c0392b; }
+    .mess-img-badge.mixed  { color: var(--orange); }
+
+    .mess-rating-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: linear-gradient(135deg, var(--orange), var(--green));
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 50px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.14);
+    }
+
+    .mess-body {
+      padding: 14px 16px 16px;
+    }
+
+    .mess-name {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--green);
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mess-address {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mess-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .mess-price {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--orange);
+    }
+
+    .mess-distance {
+      font-size: 0.78rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .mess-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-details {
+      flex: 1;
+      padding: 8px 0;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--green), #2e7d32);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.82rem;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.25s;
+      text-align: center;
+    }
+
+    .btn-details:hover {
+      box-shadow: 0 6px 18px rgba(27,94,32,0.3);
+      transform: translateY(-1px);
+    }
+
+    .btn-map {
+      padding: 8px 12px;
+      border-radius: 10px;
+      background: #eff6ff;
+      color: #2563eb;
+      font-size: 0.82rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.25s;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-map:hover {
+      background: #dbeafe;
+      transform: translateY(-1px);
+    }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .empty-state .icon { font-size: 4rem; margin-bottom: 12px; }
+    .empty-state h3 { font-size: 1.2rem; font-weight: 700; color: #374151; }
+    .empty-state p { color: var(--muted); margin-top: 6px; font-size: 0.88rem; }
+
+    /* ===== SKELETON LOADER ===== */
+    .skeleton {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 8px;
+    }
+
+    @keyframes shimmer {
+      0%   { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    .skeleton-card {
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+    }
+
+    .skeleton-img   { height: 160px; }
+    .skeleton-body  { padding: 14px 16px 16px; }
+    .skeleton-line  { height: 14px; margin-bottom: 8px; border-radius: 6px; }
+    .skeleton-line.short { width: 55%; }
+    .skeleton-line.shorter { width: 35%; }
+
+    /* ===== MINI MAP ===== */
+    #miniMapContainer {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 310px;
+      height: 240px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.22);
+      display: none;
+      z-index: 9999;
+      overflow: hidden;
+      border: 2px solid rgba(255,140,0,0.2);
+      animation: popIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.85) translateY(10px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    #miniMapHeader {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      background: linear-gradient(135deg, var(--green), var(--orange));
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 2;
+    }
+
+    #closeMapBtn {
+      background: rgba(255,255,255,0.25);
+      border: none;
+      color: #fff;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      transition: background 0.2s;
+    }
+
+    #closeMapBtn:hover { background: rgba(255,255,255,0.4); }
+
+    #miniMap {
+      width: 100%;
+      height: 100%;
+      padding-top: 32px;
+    }
+
+    /* ===== TOAST ===== */
+    #toast {
+      position: fixed;
+      bottom: 20px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--green);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      z-index: 9998;
+      opacity: 0;
+      transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    #toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 640px) {
+      .search-hero h2 { font-size: 1.4rem; }
+      .mess-grid { padding: 12px 12px 80px; gap: 14px; }
+      #miniMapContainer { width: 90%; right: 5%; }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ==================== NAVBAR ==================== -->
+<nav class="navbar">
+  <a href="index.html" class="flex items-center gap-2 text-lg font-bold" style="text-decoration:none;">
+    <div class="logo-box">
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+        <rect x="6" y="6" width="20" height="5" rx="1.5" fill="white"/>
+        <rect x="6" y="12" width="20" height="6" rx="1.5" fill="white"/>
+        <rect x="6" y="19" width="20" height="7" rx="1.5" fill="white"/>
+        <circle cx="13" cy="22.5" r="1.2" fill="#FFB84D"/>
+        <circle cx="19" cy="22.5" r="1.2" fill="#FFB84D"/>
+        <path d="M12 5 Q16 2 20 5" stroke="white" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+      </svg>
+    </div>
+    <span style="color:#1B5E20;">Digital</span><span style="color:#FF8C00;">Dabbewala</span>
+  </a>
+
+  <div style="display:flex;align-items:center;gap:10px;">
+    <a href="login.html" class="btn-glow" style="font-size:0.82rem;padding:7px 16px;">Login</a>
+    <a href="register.html" style="font-size:0.82rem;padding:7px 16px;border-radius:10px;font-weight:700;border:2px solid #1B5E20;color:#1B5E20;text-decoration:none;transition:all 0.25s;" onmouseover="this.style.background='#1B5E20';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='#1B5E20'">Register</a>
+  </div>
+</nav>
+
+<!-- ==================== SEARCH HERO ==================== -->
+<div class="search-hero">
+  <h2>🍱 Find Your Perfect Mess</h2>
+  <p>Home-cooked meals near you — affordable, healthy, and delicious</p>
+
+  <div class="search-bar-wrap">
+    <input type="text" id="searchInput" placeholder="Search by mess name, cuisine, location...">
+    <button onclick="applySearch()">🔍 Search</button>
+  </div>
+</div>
+
+<!-- ==================== LOCATION BAR ==================== -->
+<div id="locationBar">
+  <span id="locationText">📍 Location not set — enable for nearby results</span>
+  <button class="loc-btn" onclick="getUserLocation()">
+    📍 Use My Location
+  </button>
+</div>
+
+<!-- ==================== FILTER BAR ==================== -->
+<div class="filter-bar">
+  <span>Sort:</span>
+  <button class="filter-btn active" id="btn-best" onclick="setSort('best')">🏆 Best Match</button>
+  <button class="filter-btn" id="btn-price" onclick="setSort('price')">💰 Price</button>
+  <button class="filter-btn" id="btn-rating" onclick="setSort('rating')">⭐ Rating</button>
+  <button class="filter-btn" id="btn-distance" onclick="setSort('distance')">📍 Distance</button>
+
+  &nbsp;|&nbsp;
+
+  <span>Cuisine:</span>
+  <button class="cuisine-pill active" id="pill-all" onclick="setCuisine('all')">All</button>
+  <button class="cuisine-pill" id="pill-veg" onclick="setCuisine('Veg')">🥗 Veg</button>
+  <button class="cuisine-pill" id="pill-nonveg" onclick="setCuisine('Non-Veg')">🍗 Non-Veg</button>
+  <button class="cuisine-pill" id="pill-mixed" onclick="setCuisine('Mixed')">🍽️ Mixed</button>
+</div>
+
+<!-- ==================== RESULTS BAR ==================== -->
+<div class="results-bar" id="resultsBar">Loading mess listings...</div>
+
+<!-- ==================== MESS GRID ==================== -->
+<div class="mess-grid" id="messContainer">
+  <!-- Skeleton loaders -->
+  <div class="skeleton-card">
+    <div class="skeleton skeleton-img"></div>
+    <div class="skeleton-body">
+      <div class="skeleton skeleton-line"></div>
+      <div class="skeleton skeleton-line short"></div>
+      <div class="skeleton skeleton-line shorter"></div>
+    </div>
+  </div>
+  <div class="skeleton-card">
+    <div class="skeleton skeleton-img"></div>
+    <div class="skeleton-body">
+      <div class="skeleton skeleton-line"></div>
+      <div class="skeleton skeleton-line short"></div>
+      <div class="skeleton skeleton-line shorter"></div>
+    </div>
+  </div>
+  <div class="skeleton-card">
+    <div class="skeleton skeleton-img"></div>
+    <div class="skeleton-body">
+      <div class="skeleton skeleton-line"></div>
+      <div class="skeleton skeleton-line short"></div>
+      <div class="skeleton skeleton-line shorter"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MINI MAP ==================== -->
+<div id="miniMapContainer">
+  <div id="miniMapHeader">
+    <span id="miniMapTitle">📍 Mess Location</span>
+    <button id="closeMapBtn" onclick="closeMap()">✕</button>
+  </div>
+  <div id="miniMap"></div>
+</div>
+
+<!-- ==================== TOAST ==================== -->
+<div id="toast"></div>
+
+
+<!-- ==================== SCRIPT ==================== -->
+<script>
+  /* ===================== STATE ===================== */
+  let allMess     = [];
+  let displayMess = [];
+  let userLocation = null;
+  let miniMap;
+  let miniMarker;
+  let currentSort    = "best";
+  let currentCuisine = "all";
+  let searchQuery    = "";
+  let mapReady       = false;
+
+  /* ===================== LOAD DATA ===================== */
+  async function loadMess() {
+    try {
+      const res  = await fetch("https://digital-dabbewala-backend.onrender.com/api/mess/all");
+      const data = await res.json();
+
+      // Assign dummy coordinates seeded by id (consistent across refreshes)
+      allMess = data.map(m => ({
+        ...m,
+        lat: 19.0650 + (((m.id * 137) % 100) / 3000),
+        lon: 72.8650 + (((m.id * 89)  % 100) / 3000),
+        rating: m.rating || (3.8 + ((m.id * 17) % 12) / 10)
+      }));
+
+      applyFilters();
+    } catch (err) {
+      console.error("Error loading mess:", err);
+      document.getElementById("messContainer").innerHTML = `
+        <div class="empty-state">
+          <div class="icon">⚠️</div>
+          <h3>Could not load listings</h3>
+          <p>Make sure the server is running at localhost:3000</p>
+        </div>`;
+      document.getElementById("resultsBar").innerText = "";
+    }
+  }
+
+  /* ===================== HAVERSINE ===================== */
+  function calcDist(lat1, lon1, lat2, lon2) {
+    const R    = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a    = Math.sin(dLat/2)**2 +
+                 Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) *
+                 Math.sin(dLon/2)**2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+
+  /* ===================== SCORE ===================== */
+  function calcScore(m) {
+    const ratingScore   = (m.rating || 4) / 5;
+    const priceScore    = 1 / (m.price || 3000);
+    let   distanceScore = 0.5;
+
+    if (userLocation) {
+      const d = calcDist(userLocation.lat, userLocation.lon, m.lat, m.lon);
+      distanceScore = d > 0 ? 1 / d : 1;
+    }
+
+    return ratingScore * 0.5 + priceScore * 0.3 + distanceScore * 0.2;
+  }
+
+  /* ===================== APPLY FILTERS ===================== */
+  function applyFilters() {
+    let list = [...allMess];
+
+    // Search filter
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      list = list.filter(m =>
+        m.mess_name.toLowerCase().includes(q) ||
+        (m.address  && m.address.toLowerCase().includes(q)) ||
+        (m.cuisine  && m.cuisine.toLowerCase().includes(q))
+      );
+    }
+
+    // Cuisine filter
+    if (currentCuisine !== "all") {
+      list = list.filter(m => m.cuisine === currentCuisine);
+    }
+
+    // Sort
+    if (currentSort === "best") {
+      list.sort((a, b) => calcScore(b) - calcScore(a));
+    } else if (currentSort === "price") {
+      list.sort((a, b) => a.price - b.price);
+    } else if (currentSort === "rating") {
+      list.sort((a, b) => (b.rating || 4) - (a.rating || 4));
+    } else if (currentSort === "distance") {
+      if (userLocation) {
+        list.sort((a, b) =>
+          calcDist(userLocation.lat, userLocation.lon, a.lat, a.lon) -
+          calcDist(userLocation.lat, userLocation.lon, b.lat, b.lon)
+        );
+      }
+    }
+
+    displayMess = list;
+    renderMess(displayMess);
+  }
+
+  /* ===================== RENDER ===================== */
+  function renderMess(list) {
+    const container = document.getElementById("messContainer");
+    const resultsBar = document.getElementById("resultsBar");
+
+    if (list.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="icon">🍽️</div>
+          <h3>No mess listings found</h3>
+          <p>Try changing your search or filters</p>
+          <button onclick="resetFilters()" class="btn-glow" style="margin-top:14px;">Reset Filters</button>
+        </div>`;
+      resultsBar.innerText = "No results found";
+      return;
+    }
+
+    resultsBar.innerText = `Showing ${list.length} mess listing${list.length > 1 ? "s" : ""}`;
+
+    container.innerHTML = list.map((m, i) => {
+      let distText = "";
+      if (userLocation) {
+        const d = calcDist(userLocation.lat, userLocation.lon, m.lat, m.lon).toFixed(1);
+        distText = `<span class="mess-distance">📍 ${d} km away</span>`;
+      }
+
+      const badgeClass = m.cuisine === "Non-Veg" ? "nonveg" : m.cuisine === "Mixed" ? "mixed" : "";
+      const badgeLabel = m.cuisine === "Non-Veg" ? "🔴 Non-Veg" : m.cuisine === "Mixed" ? "🟡 Mixed" : "🟢 Veg";
+
+      const rating = (m.rating || 4).toFixed(1);
+
+      const imgUrl = m.image
+        ? `https://digital-dabbewala-backend.onrender.com/uploads/${m.image}`
+        : `https://placehold.co/320x160/e5e7eb/9ca3af?text=No+Image`;
+
+      return `
+        <div class="mess-card" style="animation-delay:${i * 0.06}s" onclick="goToDetails(${m.id})">
+          <div class="mess-img" style="background-image:url('${imgUrl}')">
+            <span class="mess-img-badge ${badgeClass}">${badgeLabel}</span>
+            <span class="mess-rating-badge">⭐ ${rating}</span>
+          </div>
+          <div class="mess-body">
+            <div class="mess-name">${m.mess_name}</div>
+            <div class="mess-address">📌 ${m.address || "Address not provided"}</div>
+            <div class="mess-meta">
+              <span class="mess-price">₹${m.price}<small style="font-size:0.7rem;font-weight:500;color:#6b7280;">/month</small></span>
+              ${distText}
+            </div>
+            <div class="mess-actions">
+              <button class="btn-details" onclick="event.stopPropagation(); goToDetails(${m.id})">View Details</button>
+              <button class="btn-map" onclick="event.stopPropagation(); showMap(${m.id})">
+                🗺️ Map
+              </button>
+            </div>
+          </div>
+        </div>`;
+    }).join("");
+  }
+
+  /* ===================== NAVIGATE ===================== */
+  function goToDetails(id) {
+    window.location.href = `mess-details.html?id=${id}`;
+  }
+
+  /* ===================== SEARCH ===================== */
+  function applySearch() {
+    searchQuery = document.getElementById("searchInput").value;
+    applyFilters();
+  }
+
+  document.getElementById("searchInput").addEventListener("keyup", e => {
+    if (e.key === "Enter") applySearch();
+    searchQuery = e.target.value;
+    applyFilters();
+  });
+
+  /* ===================== SORT BUTTONS ===================== */
+  function setSort(type) {
+    currentSort = type;
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    document.getElementById("btn-" + type).classList.add("active");
+    applyFilters();
+  }
+
+  /* ===================== CUISINE PILLS ===================== */
+  function setCuisine(type) {
+    currentCuisine = type;
+    document.querySelectorAll(".cuisine-pill").forEach(b => b.classList.remove("active"));
+    const pillMap = { all: "all", "Veg": "veg", "Non-Veg": "nonveg", "Mixed": "mixed" };
+    document.getElementById("pill-" + pillMap[type]).classList.add("active");
+    applyFilters();
+  }
+
+  /* ===================== RESET ===================== */
+  function resetFilters() {
+    searchQuery    = "";
+    currentCuisine = "all";
+    currentSort    = "best";
+    document.getElementById("searchInput").value = "";
+    setSort("best");
+    setCuisine("all");
+  }
+
+  /* ===================== GEOLOCATION ===================== */
+  function getUserLocation() {
+    if (!navigator.geolocation) {
+      showToast("Geolocation not supported by your browser");
+      return;
+    }
+
+    showToast("Detecting location...");
+
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        userLocation = { lat: pos.coords.latitude, lon: pos.coords.longitude };
+        document.getElementById("locationText").innerText =
+          `📍 Location detected (${userLocation.lat.toFixed(4)}, ${userLocation.lon.toFixed(4)}) — Showing nearby mess first`;
+
+        // Auto-switch to best match (distance-weighted)
+        setSort("best");
+        showToast("📍 Location set! Sorting by proximity...");
+      },
+      err => {
+        console.warn("Geolocation error:", err);
+        showToast("Could not detect location. Check browser permissions.");
+      }
+    );
+  }
+
+  /* ===================== MINI MAP ===================== */
+  function initMap() {
+    mapReady = true;
+
+    miniMap = new google.maps.Map(document.getElementById("miniMap"), {
+      center: { lat: 19.0760, lng: 72.8777 },
+      zoom: 15,
+      mapTypeControl: false,
+      streetViewControl: false,
+      fullscreenControl: false,
+      zoomControl: true,
+      styles: [
+        { featureType: "poi", stylers: [{ visibility: "off" }] }
+      ]
+    });
+  }
+
+  function showMap(id) {
+    const m = allMess.find(x => x.id === id);
+    if (!m) return;
+
+    if (!mapReady) {
+      showToast("Map is loading, try again in a moment...");
+      return;
+    }
+
+    const container = document.getElementById("miniMapContainer");
+    container.style.display = "block";
+    container.style.animation = "none";
+    void container.offsetWidth; // reflow
+    container.style.animation  = "popIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both";
+
+    document.getElementById("miniMapTitle").innerText = `📍 ${m.mess_name}`;
+
+    const loc = { lat: m.lat, lng: m.lon };
+
+    miniMap.setCenter(loc);
+    miniMap.setZoom(15);
+
+    if (miniMarker) miniMarker.setMap(null);
+
+    miniMarker = new google.maps.Marker({
+      position: loc,
+      map: miniMap,
+      title: m.mess_name,
+      animation: google.maps.Animation.DROP,
+      icon: {
+        path: google.maps.SymbolPath.CIRCLE,
+        scale: 10,
+        fillColor: "#FF8C00",
+        fillOpacity: 1,
+        strokeColor: "#fff",
+        strokeWeight: 2
+      }
+    });
+
+    const infoWindow = new google.maps.InfoWindow({
+      content: `
+        <div style="font-family:Plus Jakarta Sans,sans-serif;padding:4px 6px;min-width:140px;">
+          <strong style="color:#1B5E20;">${m.mess_name}</strong><br>
+          <span style="color:#FF8C00;font-weight:600;">₹${m.price}/month</span><br>
+          <small style="color:#6b7280;">${m.address || ""}</small>
+        </div>`
+    });
+
+    infoWindow.open(miniMap, miniMarker);
+  }
+
+  function closeMap() {
+    document.getElementById("miniMapContainer").style.display = "none";
+  }
+
+  /* ===================== TOAST ===================== */
+  function showToast(msg, duration = 2500) {
+    const t = document.getElementById("toast");
+    t.innerText = msg;
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), duration);
+  }
+
+  /* ===================== INIT ===================== */
+  loadMess();
+</script>
+
+<!-- GOOGLE MAPS API -->
+<script async defer
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCYVbod0z7kvMmMjBWAcDaOALqzgkMa4d4&callback=initMap">
+</script>
+
+</body>
+</html>

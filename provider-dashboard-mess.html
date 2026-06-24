@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Provider Dashboard | DigitalDabbewala</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        body {
+            font-family: "Plus Jakarta Sans", sans-serif;
+            background: linear-gradient(180deg, #f8f8f5, #ffffff);
+            color: #1B5E20;
+            min-height: 100vh;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #1B5E20, #FF8C00);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .animate-fadeDown {
+            animation: fadeDown .7s ease both;
+        }
+
+        @keyframes fadeDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .btn-glow {
+            background: linear-gradient(135deg, #FF8C00, #1B5E20);
+            color: white;
+            font-weight: 700;
+            border-radius: 10px;
+            padding: 6px 16px;
+            transition: all .3s;
+        }
+
+        .btn-glow:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 140, 0, .35);
+        }
+    </style>
+
+</head>
+
+<body>
+
+
+    <!-- NAVBAR -->
+
+    <nav
+        class="fixed top-0 left-0 w-full flex items-center justify-between px-6 py-3 z-50 bg-white/90 backdrop-blur-md shadow-md animate-fadeDown">
+
+        <a href="index.html" class="flex items-center gap-2 text-lg font-bold">
+
+            <div class="p-2 rounded-xl bg-gradient-to-br from-[#FF6B35] to-[#FFB84D] shadow-md">
+                <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+                    <rect x="6" y="6" width="20" height="5" rx="1.5" fill="white" />
+                    <rect x="6" y="12" width="20" height="6" rx="1.5" fill="white" />
+                    <rect x="6" y="19" width="20" height="7" rx="1.5" fill="white" />
+                </svg>
+            </div>
+
+            <span class="text-[#1B5E20]">Digital</span>
+            <span class="text-[#FF8C00]">Dabbewala</span>
+
+        </a>
+
+        <a href="profile.html" class="btn-glow">
+            Profile
+        </a>
+
+        <div class="flex items-center gap-3">
+
+            <span id="userName" class="font-semibold text-gray-700"></span>
+
+            <button onclick="logout()" class="btn-glow">
+                Logout
+            </button>
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- MAIN -->
+
+    <main class="pt-24 px-6 max-w-5xl mx-auto">
+
+        <h1 class="text-3xl font-extrabold mb-8 gradient-text">
+            Your Mess Listings
+        </h1>
+
+
+        <!-- 🔥 STATS SECTION -->
+        <div class="grid md:grid-cols-3 gap-4 mb-8">
+
+            <div class="bg-white p-5 rounded-xl shadow-md text-center">
+                <h4 class="font-semibold">Total Mess</h4>
+                <h2 id="totalMess" class="text-2xl font-bold text-green-700">0</h2>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl shadow-md text-center">
+                <h4 class="font-semibold">Subscribers</h4>
+                <h2 id="totalSubs" class="text-2xl font-bold text-orange-500">0</h2>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl shadow-md text-center">
+                <h4 class="font-semibold">Reviews</h4>
+                <h2 id="totalReviews" class="text-2xl font-bold text-green-700">0</h2>
+            </div>
+
+        </div>
+
+
+        <!-- MESS LIST -->
+        <div id="providerMessContainer" class="grid md:grid-cols-2 gap-6"></div>
+
+    </main>
+
+    <div id="toast" style="
+position:fixed;
+bottom:20px;
+right:20px;
+background:#1B5E20;
+color:white;
+padding:12px 20px;
+border-radius:10px;
+display:none;
+z-index:999;
+">
+    </div>
+
+
+
+    <script>
+
+        // ================= USER =================
+        const user = JSON.parse(localStorage.getItem("user"))
+
+        if (!user) {
+            alert("Please login first")
+            window.location.href = "login.html"
+        }
+
+
+        // ================= LOAD MESS =================
+        async function loadProviderMess() {
+
+            const res = await fetch(`https://digital-dabbewala-backend.onrender.com/api/mess/provider/${user.id}`)
+            const messes = await res.json()
+
+            const container = document.getElementById("providerMessContainer")
+            container.innerHTML = "Loading..."
+
+            if (messes.length === 0) {
+
+                container.innerHTML = `
+<p class="text-gray-500 text-lg text-center">
+No listings yet.
+<a href="mess-register.html" class="text-[#FF8C00] underline">
+Add your first mess
+</a>
+</p>
+`
+                return
+            }
+
+            messes.forEach(mess => {
+
+                container.innerHTML += `
+
+<div class="p-6 bg-white rounded-xl shadow-md">
+
+<h2 class="text-xl font-bold text-[#1B5E20] mb-2">
+${mess.mess_name}
+</h2>
+
+<p class="text-gray-600 mb-2">${mess.address}</p>
+
+<p><strong>Cuisine:</strong> ${mess.cuisine}</p>
+<p><strong>Price:</strong> ₹${mess.price}</p>
+
+<div class="flex gap-2 mt-4 flex-wrap">
+
+<button onclick="editMess(${mess.id})"
+class="px-3 py-2 bg-yellow-400 rounded-lg font-semibold">
+Edit
+</button>
+
+<button onclick="deleteMess(${mess.id})"
+class="px-3 py-2 bg-red-500 text-white rounded-lg font-semibold">
+Delete
+</button>
+
+<button onclick="viewSubscribers(${mess.id})"
+class="px-3 py-2 bg-blue-500 text-white rounded-lg font-semibold">
+Subscribers
+</button>
+
+</div>
+
+</div>
+
+`
+
+            })
+
+        }
+
+
+        // ================= DELETE =================
+        async function deleteMess(id) {
+
+            if (!confirm("Delete this mess?")) return
+
+            await fetch(`https://digital-dabbewala-backend.onrender.com/api/mess/delete/${id}`, {
+                method: "DELETE"
+            })
+
+            showToast("Mess deleted successfully")
+
+            loadProviderMess()
+            loadStats()
+        }
+
+
+        // ================= EDIT =================
+        function editMess(id) {
+            window.location.href = "edit-mess.html?id=" + id
+        }
+
+
+        // ================= LOGOUT =================
+        function logout() {
+            localStorage.removeItem("user")
+            window.location.href = "login.html"
+        }
+
+
+        // ================= STATS =================
+        async function loadStats() {
+
+            const res = await fetch(`https://digital-dabbewala-backend.onrender.com/api/mess/stats/${user.id}`)
+            const data = await res.json()
+
+            document.getElementById("totalMess").innerText = data.totalMess
+            document.getElementById("totalSubs").innerText = data.totalSubs
+            document.getElementById("totalReviews").innerText = data.totalReviews
+            document.getElementById("userName").innerText =
+                "Hi, " + user.name
+
+        }
+
+
+        // ================= SUBSCRIBERS =================
+        async function viewSubscribers(messId) {
+
+            const res = await fetch(`https://digital-dabbewala-backend.onrender.com/api/mess/subscribers/${messId}`)
+            const data = await res.json()
+
+            console.log("Subscribers:", data)
+
+            alert("Check console for subscriber list")
+
+        }
+
+
+        // ================= LOAD PAGE =================
+        loadProviderMess()
+        loadStats()
+
+        function showToast(message) {
+
+            const toast = document.getElementById("toast")
+
+            toast.innerText = message
+            toast.style.display = "block"
+
+            setTimeout(() => {
+                toast.style.display = "none"
+            }, 2000)
+
+        }
+    </script>
+
+</body>
+
+</html>

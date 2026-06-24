@@ -1,0 +1,148 @@
+:root {
+  --primary: #FF8C00;
+  --green: #1B5E20;
+  --muted: #5a6b5e;
+  --border: rgba(0,0,0,0.1);
+  --white: #ffffff;
+}
+
+/* ====== Basic ====== */
+body {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  background: var(--white);
+  color: var(--green);
+  overflow-x: hidden;
+}
+
+/* ====== Gradient Title ====== */
+.gradient-text {
+  background: linear-gradient(135deg, var(--green), var(--primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ====== Form ====== */
+.form-label {
+  font-weight: 700;
+  color: var(--green);
+  margin-bottom: .3rem;
+}
+.form-control {
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  width: 100%;
+  background: #fff;
+  font-size: 1rem;
+  transition: 0.3s;
+}
+.form-control:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.25);
+  outline: none;
+}
+
+/* ====== Cuisine Buttons ====== */
+.btn-option {
+  background: #fff;
+  border: 2px solid var(--border);
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  font-weight: 700;
+  color: var(--muted);
+  transition: 0.3s;
+}
+.btn-option.active {
+  background: linear-gradient(135deg, var(--primary), var(--green));
+  color: #fff;
+  border: none;
+  box-shadow: 0 8px 20px rgba(255, 140, 0, 0.3);
+}
+.btn-option:hover {
+  transform: scale(1.05);
+}
+
+/* ====== Upload ====== */
+.upload-box {
+  height: 100px;
+  background: #fff;
+  border: 2px dashed var(--border);
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  transition: all 0.3s;
+}
+.upload-box:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: scale(1.05);
+}
+
+/* ====== Buttons ====== */
+.btn-glow {
+  background: linear-gradient(135deg, var(--primary), var(--green));
+  color: #fff;
+  font-weight: 700;
+  padding: 0.9rem 2rem;
+  border: none;
+  border-radius: 50px;
+  box-shadow: 0 10px 28px rgba(255, 140, 0, 0.35);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.btn-glow:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 35px rgba(27, 94, 32, 0.4);
+}
+
+/* ====== Modal ====== */
+.modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(6px);
+  z-index: 100;
+}
+.modal-content {
+  background: #fff;
+  border-radius: 1rem;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 12px 35px rgba(0,0,0,0.25);
+}
+.checkmark {
+  background: #e9f9ed;
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+}
+.checkmark span {
+  color: #2ecc71;
+}
+
+/* ====== Animations ====== */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(40px);} to {opacity:1;transform:translateY(0);} }
+@keyframes fadeDown { from { opacity: 0; transform: translateY(-40px);} to {opacity:1;transform:translateY(0);} }
+@keyframes glowPulse { 0%,100%{box-shadow:0 0 20px rgba(255,140,0,.3);}50%{box-shadow:0 0 40px rgba(27,94,32,.4);} }
+@keyframes pop { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+.fade-in { animation: fadeUp 1s ease forwards; }
+.fade-up { animation: fadeUp 1.2s ease forwards; }
+.animate-fadeDown { animation: fadeDown 1s ease forwards; }
+.animate-glow { animation: glowPulse 4s infinite ease-in-out; }
+.animate-pop { animation: pop 0.5s ease-out forwards; }
+.fade-up.delay-1 { animation-delay: .1s; }
+.fade-up.delay-2 { animation-delay: .2s; }
+.fade-up.delay-3 { animation-delay: .3s; }
+.fade-up.delay-4 { animation-delay: .4s; }
+.fade-up.delay-5 { animation-delay: .5s; }
+.fade-up.delay-6 { animation-delay: .6s; }
+.fade-up.delay-7 { animation-delay: .7s; }

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Provider Dashboard | DigitalDabbewala</title>
+
+  <!-- Tailwind & Fonts -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap"
+    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+
+  <!-- External CSS -->
+  <link rel="stylesheet" href="./images/css/provider-dashboard.css">
+
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#FF8C00",
+            "secondary": "#1B5E20",
+            "light-bg": "#f8f9f8",
+            "dark-bg": "#231d0f",
+          },
+          fontFamily: {
+            display: ["Plus Jakarta Sans", "sans-serif"],
+          },
+          borderRadius: {
+            "xl": "1.5rem",
+          },
+        },
+      },
+    }
+  </script>
+</head>
+
+<body class="font-display bg-light-bg text-slate-900 dark:bg-dark-bg dark:text-white">
+
+  <!-- Navbar -->
+  <nav
+    class="navbar fixed top-0 left-0 w-full flex items-center justify-between px-6 py-3 z-50 bg-white/90 backdrop-blur-md shadow-lg">
+    <a href="index.html" class="flex items-center gap-2 text-lg font-bold">
+      <div class="logo-box p-2 rounded-xl bg-gradient-to-br from-[#FF6B35] to-[#FFB84D] animate-glow">
+        <svg width="30" height="30" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="6" y="6" width="20" height="5" rx="1.5" fill="white" />
+          <rect x="6" y="12" width="20" height="6" rx="1.5" fill="white" />
+          <rect x="6" y="19" width="20" height="7" rx="1.5" fill="white" />
+          <circle cx="13" cy="22.5" r="1.2" fill="#FFB84D" />
+          <circle cx="19" cy="22.5" r="1.2" fill="#FFB84D" />
+          <path d="M12 5 Q16 2 20 5" stroke="white" stroke-width="1.5" stroke-linecap="round" fill="none" />
+        </svg>
+      </div>
+      <span class="text-[#1B5E20]">Digital</span><span class="text-[#FF8C00]">Dabbewala</span>
+    </a>
+  </nav>
+
+  <!-- Main Dashboard -->
+  <div class="relative flex flex-col min-h-screen pt-20">
+    <main class="flex-grow px-6">
+      <h1 class="text-3xl font-bold mb-2 fade-in">Welcome, Provider Name!</h1>
+      <p class="text-gray-600 mb-8">Manage your listings, ratings, and profile all in one place.</p>
+
+      <!-- Stats -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 fade-up">
+        <div class="card">
+          <p class="label">Active Listings</p>
+          <p class="value">12</p>
+        </div>
+        <div class="card">
+          <p class="label">Total Reviews</p>
+          <p class="value">89</p>
+        </div>
+        <div class="card flex items-center justify-between">
+          <div>
+            <p class="label">Average Rating</p>
+            <p class="value">4.8</p>
+          </div>
+          <span class="material-symbols-outlined text-primary text-3xl">star</span>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="mt-10 flex justify-center fade-up delay-2">
+        <a href="./mess-register.html"><button class="btn-glow">+ Add New Mess Listing</button></a>
+      </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <footer class="bottom-nav fade-up delay-3">
+      <a href="./provider-dashboard-mess.html">
+        <span class="material-symbols-outlined">list_alt</span>
+        <p>Dashboard</p>
+      </a>
+
+      </a>
+      <a href="profile.html" class="btn-glow">
+        Profile
+      </a>
+    </footer>
+  </div>
+
+  <!-- Animation Script -->
+  <script>
+    const user = JSON.parse(localStorage.getItem("user"))
+
+    if (!user) {
+      alert("Please login first")
+      window.location.href = "login.html"
+    }
+    // Fade-in animations
+    const elements = document.querySelectorAll('.fade-in, .fade-up');
+    elements.forEach((el, i) => {
+      el.style.opacity = '0';
+      el.style.transition = 'all 1s ease-out';
+      setTimeout(() => {
+        el.style.opacity = '1';
+        el.style.transform = 'translateY(0)';
+      }, 300 + i * 200);
+    });
+  </script>
+</body>
+
+</html>
