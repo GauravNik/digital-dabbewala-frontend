@@ -810,11 +810,16 @@
     applyFilters();
   }
 
-  document.getElementById("searchInput").addEventListener("keyup", e => {
-    if (e.key === "Enter") applySearch();
-    searchQuery = e.target.value;
-    applyFilters();
-  });
+  let searchTimeout;
+
+document.getElementById("searchInput").addEventListener("input", e => {
+    clearTimeout(searchTimeout);
+
+    searchTimeout = setTimeout(() => {
+        searchQuery = e.target.value;
+        applyFilters();
+    }, 300);
+});
 
   /* ===================== SORT BUTTONS ===================== */
   function setSort(type) {
